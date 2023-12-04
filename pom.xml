@@ -11,13 +11,10 @@
   <packaging>jar</packaging>
 
   <properties>
-    <lwjgl.version>3.3.0</lwjgl.version>
-    <lwjgl.natives>natives-macos</lwjgl.natives>
+    <lwjgl.version>3.3.3</lwjgl.version>
     <slf4j.version>1.7.32</slf4j.version>
     <lombok.version>1.18.22</lombok.version>
     <java.version>11</java.version>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
   </properties>
 
   <dependencyManagement>
@@ -122,11 +119,38 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+
+      <id>macos-aarch64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <lwjgl.natives>natives-macos-arm64</lwjgl.natives>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows-amd64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <lwjgl.natives>natives-windows</lwjgl.natives>
+      </properties>
+    </profile>
+  </profiles>
 </project>

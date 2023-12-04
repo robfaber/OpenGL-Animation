@@ -1,7 +1,19 @@
 package org.lwjgl.opengl;
 
-import static org.lwjgl.glfw.GLFW.*;
+import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.BufferUtils;
 
+import java.nio.FloatBuffer;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
+
+@Slf4j
 public class Display {
 	
 	private static DisplayMode DisplayMode;
@@ -55,10 +67,26 @@ public class Display {
 
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
-		
-		GL11.glViewport(0,  0, DisplayMode.getWidth(), DisplayMode.getHeight());
-		
+
 		glfwShowWindow(window);
+
+		FloatBuffer xBuffer = BufferUtils.createFloatBuffer(1);
+		FloatBuffer yBuffer = BufferUtils.createFloatBuffer(1);
+		glfwGetWindowContentScale(window, xBuffer, yBuffer);
+		int xscale = (int) xBuffer.get();
+		int yscale = (int) yBuffer.get();
+		log.info("xscale: {} yscale: {}", xscale, yscale);
+
+		org.lwjgl.opengl.DisplayMode mode = new DisplayMode(DisplayMode.getWidth()* xscale, DisplayMode.getHeight()* yscale);
+		Display.setDisplayMode(mode);
+
+		GL.createCapabilities();
+		glViewport(0, 0, DisplayMode.getWidth(), DisplayMode.getHeight());
+		log.info("Vendor: {}", glGetString(GL_VENDOR));
+		log.info("Version: {}", glGetString(GL_VERSION));
+		log.info("Renderer: {}", glGetString(GL_RENDERER));
+		log.info("Shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
 	}
 
 	public static void destroy() {

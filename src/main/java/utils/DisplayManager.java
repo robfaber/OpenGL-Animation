@@ -30,7 +30,6 @@ public class DisplayManager {
 			System.err.println("Couldn't create display!");
 			System.exit(-1);
 		}
-		GL11.glViewport(0, 0, WIDTH, HEIGHT);
 		lastFrameTime = getCurrentTime();
 	}
 
